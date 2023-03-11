@@ -34,9 +34,6 @@ typedef unsigned long long Bitboard;  // 64 bytes - used to represent the board
 typedef int Move_Type;                // 4 bytes - used to represent the move
 typedef unsigned char sint;           // 1 byte
 
-#define HASH_MOVE_SCORE 40000
-#define PV_MOVE_SCORE 20000
-
 // enumerate the squares
 typedef enum
 {

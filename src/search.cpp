@@ -36,8 +36,9 @@ static int quiescence(int alpha, int beta)
     for (short move_number = 0; move_number < generated_moves->number_of_moves; move_number++)
     {
         copy_board_p(cur_board);
-        if (!make_move(*cur_board, generated_moves->moves[move_number].move, capture_move))
-            continue;
+
+        // we only want captures
+        if (!make_move(*cur_board, generated_moves->moves[move_number].move, capture_move)) continue;
 
         ply++;
         cur_board->History[++(cur_board->rep_index)] = cur_board->hash_position;
@@ -148,7 +149,7 @@ static int negamax(int alpha, int beta, short depth)
     {
         if (!st_null_move_pr) score = evaluate_position(*cur_board) + 125;
         else score = static_eval + 125;
-                
+
         if (score < beta)
         {
             if (depth == 1)
@@ -216,7 +217,7 @@ static int negamax(int alpha, int beta, short depth)
 
         revert_board_p(cur_board);
 
-        // UCI is out of time, return
+        // out of time, return
         if (cur_board->stopped) return 0;
 
         moves_searched++;

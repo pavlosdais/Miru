@@ -48,9 +48,10 @@ inline void tt_clear(transposition_table TT)
         TT->nodes[i].flag = HASH_NONE;
         TT->nodes[i].evaluation = 0;
     }
+    TT->cur_elements = 0;
 }
 
-static inline int tt_search(transposition_table TT, Bitboard hash_position, int& best_move, int ply, int alpha, int beta, short depth)
+static inline int tt_search(transposition_table TT, Bitboard hash_position, Move_Type& best_move, int ply, int alpha, int beta, short depth)
 {
     unsigned int index = hash_position % TT->size;
 
@@ -75,7 +76,7 @@ static inline int tt_search(transposition_table TT, Bitboard hash_position, int&
     return HASH_NONE;
 }
 
-inline void tt_insert(transposition_table TT, Bitboard hash_position, int move, int ply, int evaluation, short depth, hash_flag flag)
+inline void tt_insert(transposition_table TT, Bitboard hash_position, Move_Type move, int ply, int evaluation, short depth, hash_flag flag)
 {
     unsigned int index = hash_position % TT->size;
 

@@ -7,6 +7,7 @@ int main(void)
 {
     // initialize starting board
     gameBoard* board = new gameBoard();
+    board->get_fen_position(fen_starting_position);
 
     // UCI loop
     uci(*board);

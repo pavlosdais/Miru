@@ -1,4 +1,3 @@
-
 #ifdef WIN64
     #include <windows.h>
 #else
@@ -9,14 +8,14 @@
 
 static Bitboard keys[] = {5884158743414976048, 5884158743414976048};
 
-static inline Bitboard rotate(Bitboard v, uint8_t s)  { return (v >> s) | (v << (64 - s)); }
+static inline Bitboard rotate(Bitboard v, sint s)  { return (v >> s) | (v << (64 - s)); }
 
 Bitboard get_U64()
 {
     Bitboard tmp = keys[0];
-    keys[0] += rotate(keys[1] ^ 0xc5462216u ^ ((uint64_t) 0xcf14f4ebu << 32), 1);
+    keys[0] += rotate(keys[1] ^ 0xc5462216u ^ ((Bitboard) 0xcf14f4ebu << 32), 1);
 
-    return keys[1] += rotate(tmp ^ 0x75ecfc58u ^ ((uint64_t) 0x9576080cu << 32), 9);
+    return keys[1] += rotate(tmp ^ 0x75ecfc58u ^ ((Bitboard) 0x9576080cu << 32), 9);
 }
 
 sint get_index(const char letter)

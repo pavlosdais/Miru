@@ -15,27 +15,30 @@ OBJ = $(SRC)/main.o \
 	  $(SRC)/transposition_table.o \
 	  $(SRC)/zobrist_hashing.o
 
+# the OS the engine is running at
+OS := LINUX
+
 # executable program name
-EXEC = miru1
+EXEC := miru1
 
 # compiler
-CC = g++
+CXX := g++
 
-ifeq ($(OS), win)
-	CC = x84_64-w64-mingw32-g++
-	EXEC = miru1.exe
+ifeq ($(OS), WIN)
+	CXX = x84_64-w64-mingw32-g++
+	EXEC += .exe
 endif
 
 # flags
-flags = -Ofast -fomit-frame-pointer
+flags = -Ofast -g
 
 # create the executable program
 engine: $(OBJ)
-	$(CC) -o $(EXEC) $(OBJ) $(flags)
+	$(CXX) -o $(EXEC) $(OBJ) $(flags)
 
 # object files
 %.o: %.c
-	@$(CC) $(flags) -c -o $@ $<
+	@$(CXX) $(flags) -c $@ $<
 
 # execute the engine
 run: engine

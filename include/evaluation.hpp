@@ -3,7 +3,8 @@
 #include "board.hpp"
 #include "evaluation_tables.hpp"
 
-static sint get_rank[64] =
+// gets the rank that the square belongs in
+static sint get_rank[] =
 {
     7, 7, 7, 7, 7, 7, 7, 7,
     6, 6, 6, 6, 6, 6, 6, 6,
@@ -12,19 +13,7 @@ static sint get_rank[64] =
     3, 3, 3, 3, 3, 3, 3, 3,
     2, 2, 2, 2, 2, 2, 2, 2,
     1, 1, 1, 1, 1, 1, 1, 1,
-	0, 0, 0, 0, 0, 0, 0, 0
-};
-
-static sint mirror_squares[]
-{
-    a1,  b1,  c1,  d1,  e1,  f1,  g1,  h1,
-    a2,  b2,  c2,  d2,  e2,  f2,  g2,  h2,
-    a3,  b3,  c3,  d3,  e3,  f3,  g3,  h3,
-    a4,  b4,  c4,  d4,  e4,  f4,  g4,  h4,
-    a5,  b5,  c5,  d5,  e5,  f5,  g5,  h5,
-    a6,  b6,  c6,  d6,  e6,  f6,  g6,  h6,
-    a7,  b7,  c7,  d7,  e7,  f7,  g7,  h7,
-    a8,  b8,  c8,  d8,  e8,  f8,  g8,  h8
+    0, 0, 0, 0, 0, 0, 0, 0
 };
 
 static sint passed_pawn_bonus[] = {0, 3, 7, 12, 18, 29, 50, 200};
@@ -62,8 +51,8 @@ inline int evaluate_position(gameBoard& board)
     {
         source_square = get_lsb(piece_board);
 
-        opening_score += material_eval[OPENING][p] - positional_eval[OPENING][PAWN][mirror_squares[source_square]];
-        endgame_score += material_eval[ENDGAME][p] - positional_eval[ENDGAME][PAWN][mirror_squares[source_square]];
+        opening_score += material_eval[OPENING][p] - positional_eval[OPENING][PAWN][mirror_square[source_square]];
+        endgame_score += material_eval[ENDGAME][p] - positional_eval[ENDGAME][PAWN][mirror_square[source_square]];
 
         double_pawns = count_bits(board.bitboard[p] & board.file_masks[source_square]);
         
@@ -74,7 +63,7 @@ inline int evaluate_position(gameBoard& board)
             eval -= ISOLATED_PAWN_PENALTY;
         
         if ((board.passed_masks[black][source_square] & board.bitboard[P]) == 0)
-            eval -= passed_pawn_bonus[get_rank[mirror_squares[source_square]]];
+            eval -= passed_pawn_bonus[get_rank[mirror_square[source_square]]];
     }
 
     for (piece_board = board.bitboard[N]; piece_board; pop_bit(piece_board, source_square))   // white knight evaluation
@@ -90,8 +79,8 @@ inline int evaluate_position(gameBoard& board)
     {
         source_square = get_lsb(piece_board);
     
-        opening_score += (material_eval[OPENING][n] - positional_eval[OPENING][KNIGHT][mirror_squares[source_square]]);
-        endgame_score += (material_eval[ENDGAME][n] - positional_eval[ENDGAME][KNIGHT][mirror_squares[source_square]]);
+        opening_score += (material_eval[OPENING][n] - positional_eval[OPENING][KNIGHT][mirror_square[source_square]]);
+        endgame_score += (material_eval[ENDGAME][n] - positional_eval[ENDGAME][KNIGHT][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][n];
     }
 
@@ -111,8 +100,8 @@ inline int evaluate_position(gameBoard& board)
     {
         source_square = get_lsb(piece_board);
 
-        opening_score += (material_eval[OPENING][b] - positional_eval[OPENING][BISHOP][mirror_squares[source_square]]);
-        endgame_score += (material_eval[ENDGAME][b] - positional_eval[ENDGAME][BISHOP][mirror_squares[source_square]]);
+        opening_score += (material_eval[OPENING][b] - positional_eval[OPENING][BISHOP][mirror_square[source_square]]);
+        endgame_score += (material_eval[ENDGAME][b] - positional_eval[ENDGAME][BISHOP][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][b];
 
         eval -= count_bits(board.get_bishop_attacks(source_square, board.occupancy[both]));
@@ -138,8 +127,8 @@ inline int evaluate_position(gameBoard& board)
     {
         source_square = get_lsb(piece_board);
 
-        opening_score += (material_eval[OPENING][r] - positional_eval[OPENING][ROOK][mirror_squares[source_square]]);
-        endgame_score += (material_eval[ENDGAME][r] - positional_eval[ENDGAME][ROOK][mirror_squares[source_square]]);
+        opening_score += (material_eval[OPENING][r] - positional_eval[OPENING][ROOK][mirror_square[source_square]]);
+        endgame_score += (material_eval[ENDGAME][r] - positional_eval[ENDGAME][ROOK][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][r];
 
         if ((board.bitboard[p] & board.file_masks[source_square]) == 0)
@@ -162,8 +151,8 @@ inline int evaluate_position(gameBoard& board)
     {
         source_square = get_lsb(piece_board);
 
-        opening_score += (material_eval[OPENING][q] - positional_eval[OPENING][QUEEN][mirror_squares[source_square]]);
-        endgame_score += (material_eval[ENDGAME][q] - positional_eval[ENDGAME][QUEEN][mirror_squares[source_square]]);
+        opening_score += (material_eval[OPENING][q] - positional_eval[OPENING][QUEEN][mirror_square[source_square]]);
+        endgame_score += (material_eval[ENDGAME][q] - positional_eval[ENDGAME][QUEEN][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][q];
     }
 
@@ -187,8 +176,8 @@ inline int evaluate_position(gameBoard& board)
     {
         source_square = get_lsb(piece_board);
 
-        opening_score += (material_eval[OPENING][k] - positional_eval[OPENING][KING][mirror_squares[source_square]]);
-        endgame_score += (material_eval[ENDGAME][k] - positional_eval[ENDGAME][KING][mirror_squares[source_square]]);
+        opening_score += (material_eval[OPENING][k] - positional_eval[OPENING][KING][mirror_square[source_square]]);
+        endgame_score += (material_eval[ENDGAME][k] - positional_eval[ENDGAME][KING][mirror_square[source_square]]);
 
         if ((board.bitboard[p] & board.file_masks[source_square]) == 0)
             eval += SEMI_OPEN_FILE;
@@ -237,12 +226,9 @@ inline int move_eval(gameBoard& board, int move, int best_move, int ply)
 inline int evaluate_quiet_move(gameBoard& board, sint move, sint piece, sint square, int ply)
 {
     // return killer move evaluation
-    if (board.killer_moves[0][ply] == move) return 9000;
-    if (board.killer_moves[1][ply] == move) return 8000;
+    if (board.killer_moves[0][ply] == move) return KILLER_MOVE_SCORES[0];
+    if (board.killer_moves[1][ply] == move) return KILLER_MOVE_SCORES[1];
 
-    // return history move evaluation
+    // no killer moves found, return history move evaluation
     return board.history_moves[piece][square];
 }
-
-// helper function for the tables
-void print_mirror(int* board);

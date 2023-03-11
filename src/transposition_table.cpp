@@ -14,7 +14,7 @@ void create_transposition_table(transposition_table* TT, unsigned int size)
         if ((*TT)->nodes == NULL) throw MEMORY_ALLOCATION_MESSAGE;
     } catch (const char* message) { cerr << message << endl; }
 
-    (*TT)->size = size; (*TT)->cur_elements = 0;
+    (*TT)->size = size;
 
     tt_clear(*TT);
 }
