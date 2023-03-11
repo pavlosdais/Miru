@@ -3,7 +3,7 @@
 </p>
 
 # Miru
-Miru is a [UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface) chess engine written in C++. Miru in itself is not a complete chess program and requires a UCI-compatible graphical user interface (eg. [Arena](http://www.playwitharena.de/)). It's important to note that the engine is still on its early ages so improvements & potential bug fixes are possible.
+Miru is a [UCI](https://en.wikipedia.org/wiki/Universal_Chess_Interface) chess engine written in C++. Miru in itself is not a complete chess program and requires a UCI-compatible graphical user interface (eg. [Arena](http://www.playwitharena.de/)). It's important to note that the engine is still under development so improvements & potential bug fixes are possible.
 
 ## Features
 Huge inspiration has been taken from tutorials, stronger engines and external research. That being said, here are some of the features used:
