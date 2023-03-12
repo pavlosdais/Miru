@@ -90,14 +90,14 @@ static int negamax(int alpha, int beta, short depth)
     
     nodes++;
 
-    // we reached to deep, evaluate position
+    // we reached too deep, evaluate position
     if (ply+1 > MAX_PLY)
         return evaluate_position(*cur_board);
     
     bool is_in_check = cur_board->is_king_in_check();
     if (is_in_check) depth++;
 
-	int static_eval;
+    int static_eval;
     bool st_null_move_pr = false;
     
     // static null move pruning
@@ -113,7 +113,7 @@ static int negamax(int alpha, int beta, short depth)
     }
 
     // null move pruning
-    if (depth > R && !is_in_check && ply)
+    if (depth > R && score >= beta && !is_in_check && ply && (cur_board->HasNonPawn() > (depth > 12)))
     {
         copy_board_p(cur_board);
 
@@ -128,8 +128,11 @@ static int negamax(int alpha, int beta, short depth)
         
         cur_board->enpassant = no_sq;
 
+        // still testing reduction
+        // 4 + depth / 6 + min((score - beta) / 256, 3);
+        // 3 + depth / 5 + min(3, (score - beta) / 256);
         int RR = 4 + depth / 6 + min((score - beta) / 256, 3);
-        if (depth < RR) RR = depth;  // avoid going too "deep"
+        if (depth < RR) RR = depth;
 
         score = -negamax(-beta, -beta+1, depth-RR);
 
@@ -231,7 +234,7 @@ static int negamax(int alpha, int beta, short depth)
 
             alpha = score;
             
-            // update history moves heuristic
+            // update history move heuristic
             cur_board->update_history_move(generated_moves->moves[move_number].move, depth);
 
             // save the principal variation

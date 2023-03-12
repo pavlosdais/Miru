@@ -1,19 +1,40 @@
 #pragma once
 
-#define DOUBLE_PAWNS_PENALTY -7
+// gets the rank that the square belongs in
+static sint get_rank[] =
+{
+    7, 7, 7, 7, 7, 7, 7, 7,
+    6, 6, 6, 6, 6, 6, 6, 6,
+    5, 5, 5, 5, 5, 5, 5, 5,
+    4, 4, 4, 4, 4, 4, 4, 4,
+    3, 3, 3, 3, 3, 3, 3, 3,
+    2, 2, 2, 2, 2, 2, 2, 2,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    0, 0, 0, 0, 0, 0, 0, 0
+};
 
-#define ISOLATED_PAWN_PENALTY -5
+static short passed_pawn_bonus[2][8] =
+{   // Opening
+    0,  3,  7, 12, 18, 29, 168, 0,
+    // Endgame
+    0, -5, 13, 23, 41, 67, 233, 0 };
 
-#define SEMI_OPEN_FILE 6
+static short double_pawn_penalty[] = {-10, -25};
 
-#define OPEN_FILE 10
+static short isolated_pawn_penalty[] = {-7, -12};
 
-#define DOUBLE_BISHOP_BONUS 11
+static short king_shield[] = {2, 1};
 
-#define KING_SHIELD 1
+static short semi_open_file[] = {4, 9};
+
+static short open_file[] = {9, 12};
+
+static short bishop_pair[] = {22, 33};
+
+static short bishop_attacks[] = {1, 2};
 
 #define OPENING_SCORE 6303
-#define ENDGAME_SCORE 529
+#define ENDGAME_SCORE 545
 
 #define HASH_MOVE_SCORE 30000
 #define PV_MOVE_SCORE 20000
@@ -26,7 +47,7 @@ const short material_eval[2][12] =
     94, 337, 365, 477, 1025, 12000, -94, -337, -365, -477, -1025, -12000,
 
     // Endgame
-    108, 281, 297, 512,  936, 12000, -108, -281, -297, -512,  -936, -12000
+    108, 281, 297, 537,  936, 12000, -108, -281, -297, -537,  -936, -12000
 };
 
 static short positional_eval[2][6][SQUARES] =

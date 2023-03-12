@@ -24,6 +24,14 @@ inline bool gameBoard:: is_repetition()
     return false;
 }
 
+inline int gameBoard:: HasNonPawn()
+{
+    if (hash_side_to_move == white)
+        return count_bits(occupancy[white]) ^ bitboard[K] ^ bitboard[P];
+    else
+        return count_bits(occupancy[black]) ^ bitboard[k] ^ bitboard[p];
+}
+
 inline bool gameBoard:: is_square_attacked(const sint square, const sint color)
 {
     if (color == white)

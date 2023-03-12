@@ -61,6 +61,8 @@ class gameBoard
         Bitboard hash_position, **hash_piece, *hash_enpassant, *hash_castle, hash_side_to_move;
         Bitboard get_hash_position();
 
+        inline int HasNonPawn();
+
         // store masks for evaluation
         Bitboard* file_masks, *rank_masks, *isolated_masks, **passed_masks;
 

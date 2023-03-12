@@ -30,6 +30,31 @@
     board->side_to_move = side_cpy; board->enpassant = enpassant_cpy; board->castle = castle_cpy;  \
     board->hash_position = hash_position_cpy;                                                      \
 
+#define copy_board_non_cap_white(board)                                                              \
+    Bitboard bitboard_cpy[6], occupancy_cpy[3], hash_position_cpy = board.hash_position;             \
+    sint enpassant_cpy = board.enpassant, castle_cpy = board.castle, side_cpy = board.side_to_move;  \
+    memcpy(bitboard_cpy, board.bitboard, sizeof(bitboard_cpy));                                    \
+    memcpy(occupancy_cpy, board.occupancy, sizeof(occupancy_cpy));                                   \
+
+#define revert_board_non_cap_white(board)                                                       \
+    memcpy(board.bitboard, bitboard_cpy, sizeof(bitboard_cpy);                             \
+    memcpy(board.occupancy, occupancy_cpy, sizeof(board.occupancy));                            \
+    board.side_to_move = side_cpy; board.enpassant = enpassant_cpy; board.castle = castle_cpy;  \
+    board.hash_position = hash_position_cpy                                                     \
+
+#define copy_board_non_cap_black(board)                                                              \
+    Bitboard bitboard_cpy[6], occupancy_cpy[3], hash_position_cpy = board.hash_position;            \
+    sint enpassant_cpy = board.enpassant, castle_cpy = board.castle, side_cpy = board.side_to_move;  \
+    memcpy(bitboard_cpy, board.bitboard+6, sizeof(bitboard_cpy));                                      \
+    memcpy(occupancy_cpy, board.occupancy, sizeof(occupancy_cpy));                                   \
+
+#define revert_board_non_cap_black(board)                                                       \
+    memcpy(board.bitboard, bitboard_cpy+6, sizeof(bitboard_cpy));                               \
+    memcpy(board.occupancy, occupancy_cpy, sizeof(board.occupancy));                            \
+    board.side_to_move = side_cpy; board.enpassant = enpassant_cpy; board.castle = castle_cpy;  \
+    board.hash_position = hash_position_cpy                                                     \
+
+
 // Move representation
 // https://www.chessprogramming.org/Encoding_Moves
 

@@ -2,6 +2,7 @@
 #include "../include/utilities.hpp"
 #include "../include/move_generation.hpp"
 #include "../include/uci_commands.hpp"
+#include "../include/tests.hpp"
 
 int main(void)
 {
