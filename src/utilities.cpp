@@ -84,7 +84,7 @@ void print_move(Move_Type move)
 int get_time()
 {
     #ifdef WIN64
-        return GetTikCout();
+        return GetTickCount();
     #else
         struct timeval time;
         gettimeofday(&time, NULL);

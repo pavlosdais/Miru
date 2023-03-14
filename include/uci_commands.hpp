@@ -3,6 +3,12 @@
 #include "utilities.hpp"
 #include <unistd.h>
 
+#ifdef WIN64
+    #include <windows.h>
+#else
+    # include <sys/time.h>
+#endif
+
 // UCI main loop
 void uci(gameBoard& board);
 

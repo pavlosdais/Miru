@@ -25,8 +25,8 @@ EXEC := miru1
 CXX := g++
 
 ifeq ($(OS), WIN)
-	CXX = x84_64-w64-mingw32-g++
-	EXEC += .exe
+	CXX = x86_64-w64-mingw32-g++
+	EXEC = miru1.exe
 endif
 
 # flags
