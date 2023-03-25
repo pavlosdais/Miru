@@ -1,5 +1,7 @@
 #pragma once
 
+#include "move_generation.hpp"
+
 // returns the index of the char
 sint get_index(const char letter);
 
@@ -23,6 +25,23 @@ inline bool gameBoard:: is_repetition()
     
     return false;
 }
+
+#define make_null_move(board, ply)                                                \
+    copy_board_p(board);                                                          \
+    ply++;                                                                        \
+    board->History[++(board->rep_index)] = board->hash_position;                  \
+    zobr_hash(board->hash_position, board->hash_side_to_move);                    \
+    board->side_to_move ^= 1;                                                     \
+    if (board->enpassant != no_sq)                                                \
+        zobr_hash(board->hash_position, board->hash_enpassant[board->enpassant]); \
+    board->enpassant = no_sq;                                                     \
+
+#define revert_null_move(board, ply)  \
+    ply--;                            \
+    board->rep_index--;               \
+    revert_board_p(board);            \
+    if (board->stopped) return 0;     \
+
 
 inline int gameBoard:: HasNonPawn()
 {

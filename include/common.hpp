@@ -104,11 +104,7 @@ typedef enum
 game_phase;
 
 // enumerate piece types
-typedef enum
-{
-    PAWN=0, KNIGHT=1, BISHOP=2, ROOK=3, QUEEN=4, KING=5
-}
-piece_types;
+enum { PAWN=0, KNIGHT=1, BISHOP=2, ROOK=3, QUEEN=4, KING=5 };
 
 // bit manipulation operations
 #define set_bit(bitboard, square) ((bitboard) |= (1ULL << (square)))

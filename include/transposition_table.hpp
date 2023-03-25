@@ -78,17 +78,15 @@ static inline int tt_search(transposition_table TT, Bitboard hash_position, Move
 
 inline void tt_insert(transposition_table TT, Bitboard hash_position, Move_Type move, int ply, int evaluation, short depth, hash_flag flag)
 {
+    // current scheme is always replace
     unsigned int index = hash_position % TT->size;
 
-    if (TT->nodes[index].depth <= depth)
-    {
-        if (evaluation < -MATE_SCORE) evaluation -= ply;
-        if (evaluation > MATE_SCORE) evaluation += ply;
+    if (evaluation < -MATE_SCORE) evaluation -= ply;
+    if (evaluation > MATE_SCORE) evaluation += ply;
 
-        TT->nodes[index].hash_position = hash_position;
-        TT->nodes[index].depth = depth;
-        TT->nodes[index].flag = flag;
-        TT->nodes[index].evaluation = evaluation;
-        TT->nodes[index].move = move;
-    }
+    TT->nodes[index].hash_position = hash_position;
+    TT->nodes[index].depth = depth;
+    TT->nodes[index].flag = flag;
+    TT->nodes[index].evaluation = evaluation;
+    TT->nodes[index].move = move;
 }

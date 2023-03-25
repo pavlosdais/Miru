@@ -4,7 +4,7 @@ SRC = ./src
 include = ./include
 
 # object files
-OBJ = $(SRC)/main.o \
+OBJ = $(SRC)/miru.o \
 	  $(SRC)/utilities.o \
 	  $(SRC)/board.o \
 	  $(SRC)/tests.o \
@@ -15,14 +15,13 @@ OBJ = $(SRC)/main.o \
 	  $(SRC)/transposition_table.o \
 	  $(SRC)/zobrist_hashing.o
 
-# the OS the engine is running at
-OS := LINUX
-
-# executable program name
 EXEC := miru1
 
 # compiler
 CXX := g++
+
+# the OS the engine is running at
+OS := LINUX
 
 ifeq ($(OS), WIN)
 	CXX = x86_64-w64-mingw32-g++

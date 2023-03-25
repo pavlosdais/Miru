@@ -13,11 +13,10 @@ inline int evaluate_position(gameBoard& board)
 
     // interpolate between opening, middlegame & endgame
     int game_phase_score = 0, opening_score = 0, endgame_score = 0;
-    
+
     for (piece_board = board.bitboard[P]; piece_board; pop_bit(piece_board, source_square))  // white pawns evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += material_eval[OPENING][P] + positional_eval[OPENING][PAWN][source_square];
         endgame_score += material_eval[ENDGAME][P] + positional_eval[ENDGAME][PAWN][source_square];
 
@@ -28,12 +27,12 @@ inline int evaluate_position(gameBoard& board)
             opening_bonus += double_pawns * double_pawn_penalty[OPENING];
             endgame_bonus += double_pawns * double_pawn_penalty[ENDGAME];
         }
-        if (get_rank[source_square] != 0 && get_rank[source_square] != 7 && (board.bitboard[P] & board.isolated_masks[source_square]) == 0)
+        if ((board.bitboard[P] & board.isolated_masks[source_square]) == 0)
         {
             opening_bonus += isolated_pawn_penalty[OPENING];
             endgame_bonus += isolated_pawn_penalty[ENDGAME];
         }
-        if ((board.passed_masks[white][source_square] & board.bitboard[p]) == 0)
+        if (board.bitboard[p] == 0)
         {
             opening_bonus += passed_pawn_bonus[OPENING][get_rank[source_square]];
             endgame_bonus += passed_pawn_bonus[ENDGAME][get_rank[source_square]];
@@ -43,9 +42,8 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[p]; piece_board; pop_bit(piece_board, source_square))   // black pawns evaluation
     {
         source_square = get_lsb(piece_board);
-
-        opening_score += material_eval[OPENING][p] - positional_eval[OPENING][PAWN][mirror_square[source_square]];
-        endgame_score += material_eval[ENDGAME][p] - positional_eval[ENDGAME][PAWN][mirror_square[source_square]];
+        opening_score += (material_eval[OPENING][p] - positional_eval[OPENING][PAWN][mirror_square[source_square]]);
+        endgame_score += (material_eval[ENDGAME][p] - positional_eval[ENDGAME][PAWN][mirror_square[source_square]]);
 
         double_pawns = count_bits(board.bitboard[p] & board.file_masks[source_square])-1;
         
@@ -54,22 +52,21 @@ inline int evaluate_position(gameBoard& board)
             opening_bonus -= double_pawns * double_pawn_penalty[OPENING];
             endgame_bonus -= double_pawns * double_pawn_penalty[ENDGAME];
         }
-        if (get_rank[source_square] != 0 && get_rank[source_square] != 7 && (board.bitboard[p] & board.isolated_masks[source_square]) == 0)
+        if (board.isolated_masks[source_square] == 0)
         {
             opening_bonus -= isolated_pawn_penalty[OPENING];
             endgame_bonus -= isolated_pawn_penalty[ENDGAME];
         }
         if ((board.passed_masks[black][source_square] & board.bitboard[P]) == 0)
         {
-            opening_bonus += passed_pawn_bonus[OPENING][get_rank[source_square]];
-            endgame_bonus += passed_pawn_bonus[ENDGAME][get_rank[source_square]];
+            opening_bonus -= passed_pawn_bonus[OPENING][get_rank[mirror_square[source_square]]];
+            endgame_bonus -= passed_pawn_bonus[ENDGAME][get_rank[mirror_square[source_square]]];
         }
     }
 
     for (piece_board = board.bitboard[N]; piece_board; pop_bit(piece_board, source_square))   // white knight evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += material_eval[OPENING][N] + positional_eval[OPENING][KNIGHT][source_square];
         endgame_score += material_eval[ENDGAME][N] + positional_eval[ENDGAME][KNIGHT][source_square];
         game_phase_score += material_eval[OPENING][N];
@@ -78,7 +75,6 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[n]; piece_board; pop_bit(piece_board, source_square))   // black knight evaluation
     {
         source_square = get_lsb(piece_board);
-    
         opening_score += (material_eval[OPENING][n] - positional_eval[OPENING][KNIGHT][mirror_square[source_square]]);
         endgame_score += (material_eval[ENDGAME][n] - positional_eval[ENDGAME][KNIGHT][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][n];
@@ -87,7 +83,6 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[B], num_of_bishops = 0; piece_board; pop_bit(piece_board, source_square), num_of_bishops++)   // white bishop evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += material_eval[OPENING][B] + positional_eval[OPENING][BISHOP][source_square];
         endgame_score += material_eval[ENDGAME][B] + positional_eval[ENDGAME][BISHOP][source_square];
         game_phase_score += material_eval[OPENING][B];
@@ -105,14 +100,13 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[b], num_of_bishops = 0; piece_board; pop_bit(piece_board, source_square), num_of_bishops++)   // black bishop evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += (material_eval[OPENING][b] - positional_eval[OPENING][BISHOP][mirror_square[source_square]]);
         endgame_score += (material_eval[ENDGAME][b] - positional_eval[ENDGAME][BISHOP][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][b];
 
         int attacks = count_bits(board.get_bishop_attacks(source_square, board.occupancy[both]));
-        opening_bonus += attacks;
-        endgame_bonus += attacks;
+        opening_bonus -= attacks;
+        endgame_bonus -= attacks;
     }
     if (num_of_bishops == 2)
     {
@@ -123,27 +117,25 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[R]; piece_board; pop_bit(piece_board, source_square))   // white rook evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += material_eval[OPENING][R] + positional_eval[OPENING][ROOK][source_square];
         endgame_score += material_eval[ENDGAME][R] + positional_eval[ENDGAME][ROOK][source_square];
         game_phase_score += material_eval[OPENING][R];
 
         if ((board.bitboard[P] & board.file_masks[source_square]) == 0)
         {
-            opening_score += semi_open_file[OPENING];
-            endgame_score += semi_open_file[ENDGAME];
+            opening_bonus += semi_open_file[OPENING];
+            endgame_bonus += semi_open_file[ENDGAME];
         }
         if (((board.bitboard[P] | board.bitboard[p]) & board.file_masks[source_square]) == 0)
         {
-            opening_score += open_file[OPENING];
-            endgame_score += open_file[ENDGAME];
+            opening_bonus += open_file[OPENING];
+            endgame_bonus += open_file[ENDGAME];
         }
     }
 
     for (piece_board = board.bitboard[r]; piece_board; pop_bit(piece_board, source_square))   // black rook evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += (material_eval[OPENING][r] - positional_eval[OPENING][ROOK][mirror_square[source_square]]);
         endgame_score += (material_eval[ENDGAME][r] - positional_eval[ENDGAME][ROOK][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][r];
@@ -163,7 +155,6 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[Q]; piece_board; pop_bit(piece_board, source_square))   // white queen evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += material_eval[OPENING][Q] + positional_eval[OPENING][QUEEN][source_square];
         endgame_score += material_eval[ENDGAME][Q] + positional_eval[ENDGAME][QUEEN][source_square];
         game_phase_score += material_eval[OPENING][Q];
@@ -172,7 +163,6 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[q]; piece_board; pop_bit(piece_board, source_square))   // black queen evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += (material_eval[OPENING][q] - positional_eval[OPENING][QUEEN][mirror_square[source_square]]);
         endgame_score += (material_eval[ENDGAME][q] - positional_eval[ENDGAME][QUEEN][mirror_square[source_square]]);
         game_phase_score -= material_eval[OPENING][q];
@@ -204,7 +194,6 @@ inline int evaluate_position(gameBoard& board)
     for (piece_board = board.bitboard[k]; piece_board; pop_bit(piece_board, source_square))   // black king evaluation
     {
         source_square = get_lsb(piece_board);
-
         opening_score += (material_eval[OPENING][k] - positional_eval[OPENING][KING][mirror_square[source_square]]);
         endgame_score += (material_eval[ENDGAME][k] - positional_eval[ENDGAME][KING][mirror_square[source_square]]);
 
@@ -223,18 +212,14 @@ inline int evaluate_position(gameBoard& board)
         opening_bonus -= attacks * king_shield[OPENING];
         endgame_bonus -= attacks * king_shield[ENDGAME];
     }
-
+    
     int eval;
     if (game_phase_score > OPENING_SCORE)
         eval = opening_score + opening_bonus;
     else if (game_phase_score < ENDGAME_SCORE)
         eval = endgame_score + endgame_bonus;
     else
-    {
-        opening_score += opening_bonus;
-        endgame_score += endgame_bonus;
-        eval = (opening_score*game_phase_score + endgame_score*(opening_score - endgame_score)) / (OPENING_SCORE + (opening_bonus + endgame_bonus)/2);
-    }
+        eval = (opening_score*game_phase_score + endgame_score*(opening_score - endgame_score)) / OPENING_SCORE + (opening_bonus + endgame_bonus)/2;
 
     return (board.side_to_move == white) ? eval: -eval;
 }

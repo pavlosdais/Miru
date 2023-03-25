@@ -1,7 +1,7 @@
 #pragma once
 
 // gets the rank that the square belongs in
-static sint get_rank[] =
+static int get_rank[] =
 {
     7, 7, 7, 7, 7, 7, 7, 7,
     6, 6, 6, 6, 6, 6, 6, 6,
@@ -13,25 +13,28 @@ static sint get_rank[] =
     0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static short passed_pawn_bonus[2][8] =
+static int passed_pawn_bonus[2][8] =
 {   // Opening
     0,  3,  7, 12, 18, 29, 168, 0,
     // Endgame
     0, -5, 13, 23, 41, 67, 233, 0 };
 
-static short double_pawn_penalty[] = {-10, -25};
+// pawn structure evaluation
+static int double_pawn_penalty[] = {-10, -25};
 
-static short isolated_pawn_penalty[] = {-7, -12};
+static int isolated_pawn_penalty[] = {-7, -12};
 
-static short king_shield[] = {2, 1};
+static int king_shield[] = {2, 1};
 
-static short semi_open_file[] = {4, 9};
+// open file evaluation
+static int semi_open_file[] = {4, 9};
 
-static short open_file[] = {9, 12};
+static int open_file[] = {9, 12};
 
-static short bishop_pair[] = {22, 33};
+// bishop bonus
+static int bishop_pair[] = {22, 33};
 
-static short bishop_attacks[] = {1, 2};
+static int bishop_attacks[] = {1, 2};
 
 #define OPENING_SCORE 6303
 #define ENDGAME_SCORE 545
@@ -41,7 +44,7 @@ static short bishop_attacks[] = {1, 2};
 
 static int KILLER_MOVE_SCORES[] = { 9000, 8000 };
 
-const short material_eval[2][12] =
+const int material_eval[2][12] =
 {
     // Opening
     94, 337, 365, 477, 1025, 12000, -94, -337, -365, -477, -1025, -12000,
@@ -50,7 +53,7 @@ const short material_eval[2][12] =
     108, 281, 297, 537,  936, 12000, -108, -281, -297, -537,  -936, -12000
 };
 
-static short positional_eval[2][6][SQUARES] =
+const int positional_eval[2][6][64] =
 {
     // -Opening- //
 
@@ -115,9 +118,9 @@ static short positional_eval[2][6][SQUARES] =
     -15,  36,  12, -54,   8, -28,  24,  14,
 
 
-    // -Endgame- //
+    // Endgame positional piece scores //
 
-    // pawn
+    //pawn
     0,   0,   0,   0,   0,   0,   0,   0,
     178, 173, 158, 134, 147, 132, 165, 187,
     94, 100,  85,  67,  56,  53,  82,  84,
@@ -193,7 +196,7 @@ static sint mirror_square[]
 
 // Most Valuable Victim - Least Valuable Aggressor
 // https://www.chessprogramming.org/MVV-LVA
-static short mvv_lva[12][12]
+static int mvv_lva[12][12]
 {
     10105, 10205, 10305, 10405, 10505, 10605, 10105, 10205, 10305, 10405, 10505, 10605,
     10104, 10204, 10304, 10404, 10504, 10604, 10104, 10204, 10304, 10404, 10504, 10604,

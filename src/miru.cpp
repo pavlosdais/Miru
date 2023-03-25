@@ -3,6 +3,7 @@
 #include "../include/move_generation.hpp"
 #include "../include/uci_commands.hpp"
 #include "../include/tests.hpp"
+#include "../include/evaluation.hpp"
 
 int main(void)
 {

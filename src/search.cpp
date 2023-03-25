@@ -113,35 +113,18 @@ static int negamax(int alpha, int beta, short depth)
     }
 
     // null move pruning
-    if (depth > R && score >= beta && !is_in_check && ply && (cur_board->HasNonPawn() > (depth > 12)))
+    if (depth > R && !is_in_check && ply)
     {
-        copy_board_p(cur_board);
+        make_null_move(cur_board, ply)
 
-        ply++;
-        cur_board->History[++(cur_board->rep_index)] = cur_board->hash_position;
-        
-        zobr_hash(cur_board->hash_position, cur_board->hash_side_to_move);
-        cur_board->side_to_move ^= 1;
+        // testing reduction
+        // * 4 + depth / 6 + min((score - beta) / 256, 3);
+        // * 3 + depth / 5 + min(3, (score - beta) / 256);
+        // * -R-1
 
-        if (cur_board->enpassant != no_sq)
-            zobr_hash(cur_board->hash_position, cur_board->hash_enpassant[cur_board->enpassant]);
-        
-        cur_board->enpassant = no_sq;
+        score = -negamax(-beta, -beta+1, depth-R-1);
 
-        // still testing reduction
-        // 4 + depth / 6 + min((score - beta) / 256, 3);
-        // 3 + depth / 5 + min(3, (score - beta) / 256);
-        int RR = 4 + depth / 6 + min((score - beta) / 256, 3);
-        if (depth < RR) RR = depth;
-
-        score = -negamax(-beta, -beta+1, depth-RR);
-
-        ply--;
-        cur_board->rep_index--;
-
-        revert_board_p(cur_board);
-
-        if (cur_board->stopped) return 0;
+        revert_null_move(cur_board, ply)
 
         if (score >= beta)
             return beta;
@@ -163,7 +146,7 @@ static int negamax(int alpha, int beta, short depth)
             
             score += 175;
             
-            if (score < beta && depth <= 2)
+            if (score < beta && depth < 3)
             {
                 int new_score = quiescence(alpha, beta);
                 if (new_score < beta)
