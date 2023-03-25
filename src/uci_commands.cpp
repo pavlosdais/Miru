@@ -3,51 +3,45 @@
 #include "../include/uci_commands.hpp"
 #include "../include/move_generation.hpp"
 #include "../include/search.hpp"
+#include "../include/evaluation.hpp"
+
 
 #define UCI_OK "readyok\n"
 
 inline int parse_move(char* pmove, gameBoard& board)
 {
-    // get all legal moves
-    int source_square = get_square((pmove[0]-'a'), (pmove[1]-'0')), target_square = get_square((pmove[2]-'a'), (pmove[3]-'0'));
-
+    // generate possible moves
     _move_list generated_moves[1];
-    generate_moves(board, generated_moves, 0, 0);
+    get_moves(board, generated_moves, 0, 0);
+
+    int source_square = (pmove[0] - 'a') + (8 - (pmove[1] - '0')) * 8, target_square = (pmove[2] - 'a') + (8 - (pmove[3] - '0')) * 8;
     
-    int move_len = strlen(pmove);
-    bool is_promotion = (move_len == 6 || move_len == 5);
-
-    for (int move = 0; move != generated_moves->number_of_moves; move++)
+    for (int move_num = 0; move_num != generated_moves->number_of_moves; move_num++)
     {
-        int promote = get_promoted_piece(generated_moves->moves[move].move);
-
-        string str_move = square_to_coordinates[get_source_square(generated_moves->moves[move].move)] +
-                          square_to_coordinates[get_target_square(generated_moves->moves[move].move)];
+        int move = generated_moves->moves[move_num].move;
         
-        // same moves
-        if (pmove[0] == str_move[0] && pmove[1] == str_move[1] && pmove[2] == str_move[2] && pmove[3] == str_move[3])
+        if (source_square == get_source_square(move) && target_square == get_target_square(move))
         {
-            if (!promote)
+            int promoted_piece = get_promoted_piece(move);
+            
+            if (promoted_piece)
             {
-                make_move(board, generated_moves->moves[move].move, all_moves);
-                return true;
+                if ((promoted_piece == Q || promoted_piece == q) && pmove[4] == 'q') return move;
+                else if ((promoted_piece == R || promoted_piece == r) && pmove[4] == 'r') return move;
+                else if ((promoted_piece == B || promoted_piece == b) && pmove[4] == 'b') return move;
+                else if ((promoted_piece == N || promoted_piece == n) && pmove[4] == 'n') return move;
+                else break;  // invalid move
             }
-
-            if (is_promotion)
-            {
-                if (pmove[4] == find_promoted_piece(promote))
-                {
-                    make_move(board, generated_moves->moves[move].move, all_moves);
-                    return true;
-                }
-            }
+            return move;
         }
     }
-    return false;
+    
+    return 0;
 }
 
 inline void parse_position(char* position, gameBoard& board)
 {
+    char* pos_cpy = position;
     position += 9;  // parse "position "
 
     char* position_cpy = position;
@@ -68,30 +62,26 @@ inline void parse_position(char* position, gameBoard& board)
     if ((position_cpy = strstr(position, "moves")) != NULL)
     {
         // parse "moves "
-        position_cpy+=6;
+        position_cpy += 6;
 
-        char* p = new char[10];
-        while (*position_cpy)
+        while(*position_cpy)
         {
-            int i = 0;
-            while (*position_cpy && *position_cpy != ' ')
+            int move = parse_move(position_cpy, board);
+            
+            if (move == 0)  // illegal move
             {
-                p[i++] = *position_cpy;
-                position_cpy++;
-            }
-            p[i] = '\0';
-
-            board.History[++(board.rep_index)] = board.hash_position;
-
-            if (parse_move(p, board) == false)
-            {
-                cout << "Error whilst trying to play the move" << endl;
+                cout << "Illegal move\n";
                 break;
             }
+            
+            board.add_to_history();  // add position to the history
 
+            make_move(board, move, all_moves);  // play move
+            
+            // get next move
+            while (*position_cpy && *position_cpy != ' ') position_cpy++;
             position_cpy++;
         }
-        delete[] p;
     }
 }
 
@@ -140,15 +130,16 @@ inline void parse_go(char* command, gameBoard& board)
 
     cout << "time:"<< board.time << " start:" << board.starttime << " stop:" << board.stoptime << " depth:" << depth << " timeset:" << board.timeset << endl;
 
-    // search position
+    // start the search
     best_move(&board, depth);
 }
 
 void uci(gameBoard& board)
 {
     setbuf(stdin, NULL); setbuf(stdout, NULL);
-    char* input = new char[1500];
+    char input[1500];
     
+    // print info about the engine
     cout << "id name " << ENGINE_NAME << ENGINE_VERSION << endl;
     cout << UCI_OK;
 
@@ -160,27 +151,26 @@ void uci(gameBoard& board)
         if (!fgets(input, 1500, stdin) || input[0] == '\n')
             continue;
 
-        if (strncmp(input, "ucinewgame", 10) == 0)
+        if (strncmp(input, "ucinewgame", 10) == 0)  // start new game
         {
             parse_position((char*)"position startpos", board);
             tt_clear(board.TT);
         }
-        else if (strncmp(input, "exit", 4) == 0)
+        else if (strncmp(input, "exit", 4) == 0)  // exit
             break;
-        else if (strncmp(input, "isready", 7) == 0)
+        else if (strncmp(input, "isready", 7) == 0)  // is ready
             cout << UCI_OK;
-        else if (strncmp(input, "position", 8) == 0)
+        else if (strncmp(input, "position", 8) == 0)  // parse position
         {
             parse_position(input, board);
             tt_clear(board.TT);
         }
-        else if (strncmp(input, "go", 2) == 0)
+        else if (strncmp(input, "go", 2) == 0)  // start search
             parse_go(input, board);
-        else if (strncmp(input, "uci", 3) == 0)
+        else if (strncmp(input, "uci", 3) == 0)  // print info
         {
             cout << "id name " << ENGINE_NAME << ENGINE_VERSION << endl;
             cout << UCI_OK;
         }
     }
-    delete[] input;
 }

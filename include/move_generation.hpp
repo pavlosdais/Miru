@@ -794,12 +794,17 @@ static inline void generate_moves_black(gameBoard& curr_board, move_list move_li
     }
 }
 
-inline void generate_moves(gameBoard& curr_board, move_list generated_moves, Move_Type best_move, int ply)
+inline void get_moves(gameBoard& curr_board, move_list generated_moves, Move_Type best_move, int ply)
 {
     curr_board.follow_pv = false;
     generated_moves->number_of_moves = 0;
     if (curr_board.side_to_move == white) generate_moves_white(curr_board, generated_moves, best_move, ply);
     else generate_moves_black(curr_board, generated_moves, best_move, ply);
+}
+
+inline void generate_moves(gameBoard& curr_board, move_list generated_moves, Move_Type best_move, int ply)
+{
+    get_moves(curr_board, generated_moves, best_move, ply);
     
     // sort the moves using quick sort
     quick_sort(generated_moves, 0, generated_moves->number_of_moves-1);

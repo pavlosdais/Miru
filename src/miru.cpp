@@ -3,13 +3,14 @@
 #include "../include/move_generation.hpp"
 #include "../include/uci_commands.hpp"
 #include "../include/tests.hpp"
-#include "../include/evaluation.hpp"
 
 int main(void)
 {
     // initialize starting board
     gameBoard* board = new gameBoard();
     board->get_fen_position(fen_starting_position);
+
+    // perft_tests(*board);
 
     // UCI loop
     uci(*board);

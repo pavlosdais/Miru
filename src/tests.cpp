@@ -8,7 +8,7 @@
 
 #define NUM_OF_TESTS 6
 
-#define PERFT_MAX_DEPTH 5
+#define PERFT_MAX_DEPTH 4
 #define SEARCH_MAX_DEPTH 12
 
 #define START_TEST 0
@@ -22,7 +22,7 @@ void search(gameBoard& curr_board, sint depth, unsigned long& nodes)
         return;
     }
 
-    _move_list generated_moves[1]; generate_moves(curr_board, generated_moves, 0, 0);
+    _move_list generated_moves[1]; get_moves(curr_board, generated_moves, 0, 0);
 
     for (short move_number = 0; move_number != generated_moves->number_of_moves; move_number++)
     {

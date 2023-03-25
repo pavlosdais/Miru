@@ -103,6 +103,9 @@ class gameBoard
         // resets the board
         void resetBoard();
 
+        // add position to history
+        inline void add_to_history();
+
         // returns true if the square is attacked by the colored player, false if not
         inline bool is_square_attacked(const sint square, const sint color);
         

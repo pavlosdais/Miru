@@ -9,6 +9,10 @@
 #define REDUCT_LIMIT 2
 #define R 2
 
+#define EVAL_MARGIN 120
+#define RAZORING_BONUS1 125
+#define RAZORING_BONUS2 175
+
 static unsigned long nodes;
 static int ply;
 gameBoard* cur_board;
@@ -41,7 +45,7 @@ static int quiescence(int alpha, int beta)
         if (!make_move(*cur_board, generated_moves->moves[move_number].move, capture_move)) continue;
 
         ply++;
-        cur_board->History[++(cur_board->rep_index)] = cur_board->hash_position;
+        cur_board->add_to_history();
 
         int score = -quiescence(-beta, -alpha);
 
@@ -117,7 +121,7 @@ static int negamax(int alpha, int beta, short depth)
     {
         make_null_move(cur_board, ply)
 
-        // testing reduction
+        // still testing reduction:|
         // * 4 + depth / 6 + min((score - beta) / 256, 3);
         // * 3 + depth / 5 + min(3, (score - beta) / 256);
         // * -R-1
@@ -131,10 +135,10 @@ static int negamax(int alpha, int beta, short depth)
     }
 
     // razoring
-    if (!pv_node && !is_in_check && depth <= 3)
+    if (!pv_node && !is_in_check && depth < 4)
     {
-        if (!st_null_move_pr) score = evaluate_position(*cur_board) + 125;
-        else score = static_eval + 125;
+        if (!st_null_move_pr) score = evaluate_position(*cur_board) + RAZORING_BONUS1;
+        else score = static_eval + RAZORING_BONUS1;
 
         if (score < beta)
         {
@@ -144,7 +148,7 @@ static int negamax(int alpha, int beta, short depth)
                 return (new_score > score) ? new_score : score;
             }
             
-            score += 175;
+            score += RAZORING_BONUS2;
             
             if (score < beta && depth < 3)
             {
@@ -169,7 +173,7 @@ static int negamax(int alpha, int beta, short depth)
         if (!make_move(*cur_board, generated_moves->moves[move_number].move, all_moves)) continue;
         
         ply++;
-        cur_board->History[++(cur_board->rep_index)] = cur_board->hash_position;
+        cur_board->add_to_history();
 
         legal_moves++;
 

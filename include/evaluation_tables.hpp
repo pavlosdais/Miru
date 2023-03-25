@@ -15,29 +15,29 @@ static int get_rank[] =
 
 static int passed_pawn_bonus[2][8] =
 {   // Opening
-    0,  3,  7, 12, 18, 29, 168, 0,
+    0,  3,  7, 10, 15, 21, 43, 0,
     // Endgame
-    0, -5, 13, 23, 41, 67, 233, 0 };
+    0, -5, 4, 13, 21, 30, 100, 0 };
 
 // pawn structure evaluation
-static int double_pawn_penalty[] = {-10, -25};
+static int double_pawn_penalty[] = {-7, -14};
 
-static int isolated_pawn_penalty[] = {-7, -12};
+static int isolated_pawn_penalty[] = {-3, -9};
 
 static int king_shield[] = {2, 1};
 
 // open file evaluation
 static int semi_open_file[] = {4, 9};
 
-static int open_file[] = {9, 12};
+static int open_file[] = {7, 10};
 
 // bishop bonus
-static int bishop_pair[] = {22, 33};
+static int bishop_pair[] = {15, 20};
 
 static int bishop_attacks[] = {1, 2};
 
-#define OPENING_SCORE 6303
-#define ENDGAME_SCORE 545
+#define OPENING_SCORE 6192
+#define ENDGAME_SCORE 518
 
 #define HASH_MOVE_SCORE 30000
 #define PV_MOVE_SCORE 20000
@@ -47,15 +47,15 @@ static int KILLER_MOVE_SCORES[] = { 9000, 8000 };
 const int material_eval[2][12] =
 {
     // Opening
-    94, 337, 365, 477, 1025, 12000, -94, -337, -365, -477, -1025, -12000,
+    82, 337, 365, 477, 1025, 12000, -82, -337, -365, -477, -1025, -12000,
 
     // Endgame
-    108, 281, 297, 537,  936, 12000, -108, -281, -297, -537,  -936, -12000
+    94, 281, 297, 512,  936, 12000, -94, -281, -297, -512,  -936, -12000
 };
 
 const int positional_eval[2][6][64] =
 {
-    // -Opening- //
+    // OPENING
 
     // pawn
     0,   0,   0,   0,   0,   0,  0,   0,
@@ -118,9 +118,9 @@ const int positional_eval[2][6][64] =
     -15,  36,  12, -54,   8, -28,  24,  14,
 
 
-    // Endgame positional piece scores //
+    // ENDGAME
 
-    //pawn
+    // pawn
     0,   0,   0,   0,   0,   0,   0,   0,
     178, 173, 158, 134, 147, 132, 165, 187,
     94, 100,  85,  67,  56,  53,  82,  84,

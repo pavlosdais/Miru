@@ -40,10 +40,13 @@ engine: $(OBJ)
 	@$(CXX) $(flags) -c $@ $<
 
 # execute the engine
-run: engine
+run:
 	./$(EXEC)
 
 # delete excess object files
 clear:
 	rm -f $(OBJ)
 	clear
+
+help: 
+	valgrind --leak-check=full -v --show-leak-kinds=all --track-origins=yes ./$(EXEC)

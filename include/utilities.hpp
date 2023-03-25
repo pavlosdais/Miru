@@ -51,6 +51,8 @@ inline int gameBoard:: HasNonPawn()
         return count_bits(occupancy[black]) ^ bitboard[k] ^ bitboard[p];
 }
 
+inline void gameBoard:: add_to_history()  { this->History[++(this->rep_index)] = this->hash_position; }
+
 inline bool gameBoard:: is_square_attacked(const sint square, const sint color)
 {
     if (color == white)
