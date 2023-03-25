@@ -28,8 +28,8 @@ Huge inspiration has been taken from tutorials, stronger engines and external re
 - [Piece-Square Tables](https://www.chessprogramming.org/Piece-Square_Tables)
 - [Pawn Structure](https://www.chessprogramming.org/Pawn_Structure)
 
-# Strength
-The engine is estimated to be around 2000 elo, thought, it still needs to be officially tested against other engines.
+## Strength
+The engine is estimated to be roughly at around 2000 elo, though, it still needs to be officially tested against other engines.
 
 ## Compilation and usage
 The engine can be compiled using `make`. After compiling you can use the engine either </br>

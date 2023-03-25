@@ -93,11 +93,12 @@ inline int evaluate_position(gameBoard& board)
         endgame_score += material_eval[ENDGAME][B] + positional_eval[ENDGAME][BISHOP][source_square];
         game_phase_score += material_eval[OPENING][B];
         
+        // mobility bonus
         int attacks = count_bits(board.get_bishop_attacks(source_square, board.occupancy[both]));
         opening_bonus += attacks;
         endgame_bonus += attacks;
     }
-    if (num_of_bishops > 1)
+    if (num_of_bishops == 2)  // double bishop bonus
     {
         opening_bonus += bishop_pair[OPENING];
         endgame_bonus += bishop_pair[ENDGAME];
@@ -110,11 +111,12 @@ inline int evaluate_position(gameBoard& board)
         endgame_score += material_eval[ENDGAME][b] - positional_eval[ENDGAME][BISHOP][mirror_square[source_square]];
         game_phase_score -= material_eval[OPENING][b];
 
+        // mobility bonus
         int attacks = count_bits(board.get_bishop_attacks(source_square, board.occupancy[both]));
         opening_bonus -= attacks;
         endgame_bonus -= attacks;
     }
-    if (num_of_bishops > 1)
+    if (num_of_bishops == 2)  // double bishop bonus
     {
         opening_bonus -= bishop_pair[OPENING];
         endgame_bonus -= bishop_pair[ENDGAME];
@@ -127,6 +129,7 @@ inline int evaluate_position(gameBoard& board)
         endgame_score += material_eval[ENDGAME][R] + positional_eval[ENDGAME][ROOK][source_square];
         game_phase_score += material_eval[OPENING][R];
 
+        // open & semi-open file bonus
         if ((board.bitboard[P] & board.file_masks[source_square]) == 0)
         {
             opening_bonus += semi_open_file[OPENING];
@@ -146,6 +149,7 @@ inline int evaluate_position(gameBoard& board)
         endgame_score += material_eval[ENDGAME][r] - positional_eval[ENDGAME][ROOK][mirror_square[source_square]];
         game_phase_score -= material_eval[OPENING][r];
 
+        // open & semi-open file bonus
         if ((board.bitboard[p] & board.file_masks[source_square]) == 0)
         {
             opening_bonus -= semi_open_file[OPENING];
@@ -181,6 +185,7 @@ inline int evaluate_position(gameBoard& board)
         opening_score += material_eval[OPENING][K] + positional_eval[OPENING][KING][source_square];
         endgame_score += material_eval[ENDGAME][K] + positional_eval[ENDGAME][KING][source_square];
 
+        // very basic king safety
         if ((board.bitboard[P] & board.file_masks[source_square]) == 0)
         {
             opening_bonus -= semi_open_file[OPENING];
@@ -191,7 +196,6 @@ inline int evaluate_position(gameBoard& board)
             opening_bonus -= open_file[OPENING];
             endgame_bonus -= open_file[ENDGAME];
         }
-        
         int attacks = count_bits(board.get_king_attacks(source_square) & board.occupancy[white]);
         opening_bonus += attacks * king_shield[OPENING];
         endgame_bonus += attacks * king_shield[ENDGAME];
@@ -203,6 +207,7 @@ inline int evaluate_position(gameBoard& board)
         opening_score += material_eval[OPENING][k] - positional_eval[OPENING][KING][mirror_square[source_square]];
         endgame_score += material_eval[ENDGAME][k] - positional_eval[ENDGAME][KING][mirror_square[source_square]];
 
+        // very basic king safety
         if ((board.bitboard[p] & board.file_masks[source_square]) == 0)
         {
             opening_bonus += semi_open_file[OPENING];
@@ -213,7 +218,6 @@ inline int evaluate_position(gameBoard& board)
             opening_bonus += open_file[OPENING];
             endgame_bonus += open_file[ENDGAME];
         }
-        
         int attacks = count_bits(board.get_king_attacks(source_square) & board.occupancy[black]);
         opening_bonus -= attacks * king_shield[OPENING];
         endgame_bonus -= attacks * king_shield[ENDGAME];
@@ -237,7 +241,6 @@ inline int evaluate_position(gameBoard& board)
 inline int evaluate_attack_move(gameBoard& board, sint piece, int target_square)
 {
     sint search_piece = (board.side_to_move == white)? p: P;
-
     while (!get_bit(board.bitboard[search_piece++], target_square));
     return mvv_lva[piece][search_piece-1];
 }
