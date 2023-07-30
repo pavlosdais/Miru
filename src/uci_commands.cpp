@@ -5,7 +5,6 @@
 #include "../include/search.hpp"
 #include "../include/evaluation.hpp"
 
-
 #define UCI_OK "readyok\n"
 
 inline int parse_move(char* pmove, gameBoard& board)
@@ -41,7 +40,6 @@ inline int parse_move(char* pmove, gameBoard& board)
 
 inline void parse_position(char* position, gameBoard& board)
 {
-    char* pos_cpy = position;
     position += 9;  // parse "position "
 
     char* position_cpy = position;

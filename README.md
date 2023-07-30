@@ -32,6 +32,6 @@ Huge inspiration has been taken from tutorials, stronger engines and external re
 The engine is estimated to be roughly at around 2000 elo, though, it still needs to be officially tested against other engines.
 
 ## Compilation and usage
-The engine can be compiled using `make`. After compiling you can use the engine either </br>
+The engine can be compiled using `make` *or* `make final` for the final release. After compiling you can use the engine either </br>
 - *Manually*, by running `make run` and following the UCI protocol [here](https://www.wbec-ridderkerk.nl/html/UCIProtocol.html). </br>
 - *Automatically*, by loading it into a GUI.

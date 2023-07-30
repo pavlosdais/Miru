@@ -119,7 +119,7 @@ static inline void swap(move_info** a, move_info** b)
 {
     move_info** tmp = a;
     a = b;
-    b = a;
+    b = tmp;
 }
 
 static inline short partition(move_list arr, int low, int high)

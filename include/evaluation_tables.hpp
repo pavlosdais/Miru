@@ -34,8 +34,6 @@ static int open_file[] = {7, 10};
 // bishop bonus
 static int bishop_pair[] = {15, 20};
 
-static int bishop_attacks[] = {1, 2};
-
 #define OPENING_SCORE 6192
 #define ENDGAME_SCORE 518
 

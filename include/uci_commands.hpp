@@ -80,7 +80,6 @@ inline int gameBoard:: input_waiting()
            if (!PeekNamedPipe(inh, NULL, 0, NULL, &dw, NULL)) return 1;
            return dw;
         }
-        
         else
         {
            GetNumberOfConsoleInputEvents(inh, &dw);

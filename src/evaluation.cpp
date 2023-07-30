@@ -10,10 +10,9 @@ static inline Bitboard set_mask(const sint rank_number, const sint file_number)
         {
             const sint square = get_square(rank, file);
             
-            if (file_number != -1 && file == file_number)
+            if (file == file_number)
                 mask |= set_bit(mask, square);
-            
-            else if (rank_number != -1 && rank == rank_number)
+            else if (rank == rank_number)
                 mask |= set_bit(mask, square);
         }
     }
